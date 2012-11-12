@@ -3,8 +3,11 @@
 
 #include <cstddef>  // for size_t
 
+// "Remedial Template Library"
 namespace rtl {
 
+// Other than the typedef's at the top, I believe that this is pretty much
+// the STL's vector class. It seemed like a good starting point.
 template <typename T>
 class vector {
  public:
