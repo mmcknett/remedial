@@ -17,7 +17,7 @@ Since we don't have any challenges set for the first week, I encourage discussin
 Lesson Plan
 ===========
 
-Week 1: Arrays and Sorting
+[Week 1: Arrays and Sorting](week1/)
 --------------------------
 
 Write a dynamically resizing array. Implement two sorting algorithms that can function on this array.
