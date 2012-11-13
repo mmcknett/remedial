@@ -14,6 +14,8 @@ class vector {
   typedef size_t size_type;
   typedef T* iterator;
   typedef const T* const_iterator;
+  typedef T* reverse_iterator;
+  typedef const T* const_reverse_iterator;
 
   explicit vector(size_type n = 0, const T& x = T());
   vector(const vector<T>& v);
@@ -25,11 +27,11 @@ class vector {
   iterator end();
   const_iterator end() const;
 
-  iterator rbegin();
-  const_iterator rbegin() const;
+  reverse_iterator rbegin();
+  const_reverse_iterator rbegin() const;
 
-  iterator rend();
-  const_iterator rend() const;
+  reverse_iterator rend();
+  const_reverse_iterator rend() const;
 
   size_type size() const;
   size_type max_size() const;
