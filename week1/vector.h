@@ -6,16 +6,42 @@
 // "Remedial Template Library"
 namespace rtl {
 
+template <typename L, typename T>
+class listIterator
+{
+public:
+	listIterator(L& list);
+	listIterator(const listIterator<L, T>& other);
+	virtual bool end();
+	virtual listIterator<L, T>& operator++();
+	T& operator*();
+
+protected:
+	L& m_list;
+	size_t m_idxCur;
+};
+
+template <typename L, typename T>
+class reverseListIterator : listIterator<L, T>
+{
+public:
+	reverseListIterator(L& list);
+	reverseListIterator(const reverseListIterator<L, T>& other);
+	bool end() override;
+	reverseListIterator<L, T>& operator++() override;
+};
+
 // Other than the typedef's at the top, I believe that this is pretty much
 // the STL's vector class. It seemed like a good starting point.
 template <typename T>
-class vector {
+class vector
+{
 public:
 	typedef size_t size_type;
-	typedef T* iterator;
-	typedef const T* const_iterator;
-	typedef T* reverse_iterator;
-	typedef const T* const_reverse_iterator;
+	typedef listIterator<vector<T>, T> iterator;
+	typedef listIterator<const vector<T>, const T> const_iterator;
+	typedef reverseListIterator<vector<T>, T> reverse_iterator;
+	typedef reverseListIterator<const vector<T>, const T> const_reverse_iterator;
 
 	explicit vector(size_type n = 0, const T& x = T());
 	vector(const vector<T>& v);

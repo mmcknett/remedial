@@ -11,6 +11,84 @@ namespace rtl
 {
 
 
+// ============================================================================
+// listIterator implementation
+// ============================================================================
+template <typename L, typename T>
+listIterator<L, T>::listIterator(L& list) :
+	m_list(list),
+	m_idxCur(0)
+{
+}
+
+template <typename L, typename T>
+listIterator<L, T>::listIterator(const listIterator<L, T>& other) :
+	m_list(other.m_list),
+	m_idxCur(other.m_idxCur)
+{
+}
+
+
+template <typename L, typename T>
+bool listIterator<L, T>::end()
+{
+	return m_list.size() == m_idxCur;
+}
+
+template <typename L, typename T>
+listIterator<L, T>& listIterator<L, T>::operator++()
+{
+	++m_idxCur;
+	return *this;
+}
+
+
+template <typename L, typename T>
+T& listIterator<L, T>::operator*()
+{
+	return m_list[m_idxCur];
+}
+
+
+// ============================================================================
+// reverseListIterator implementation
+// ============================================================================
+template <typename L, typename T>
+reverseListIterator<L, T>::reverseListIterator(L& list) :
+	listIterator<L, T>(list)
+{
+	m_idxCur = list.size() - 1;
+}
+
+
+template <typename L, typename T>
+reverseListIterator<L,T>::reverseListIterator(const reverseListIterator<L, T>& other) :
+	m_list(other.m_list),
+	m_idxCur(other.m_idxCur)
+{
+}
+
+
+template <typename L, typename T>
+bool reverseListIterator<L,T>::end()
+{
+	// TODO: That's just incorrect.  m_idxCur is unsigned!
+	//return m_idxCur == -1;
+	return true; // I'm just breaking it for now.
+}
+
+template <typename L, typename T>
+reverseListIterator<L, T>& reverseListIterator<L,T>::operator++()
+{
+	--m_idxCur;
+	return *this;
+}
+
+
+// ============================================================================
+// vector implementation
+// ============================================================================
+
 template <typename T>
 vector<T>::vector(size_type n = 0, const T& x = T())
 {
@@ -34,57 +112,58 @@ vector<T>::vector(I first, I last)
 
 
 template <typename T>
-vector<T>::iterator vector<T>::begin()
+typename vector<T>::iterator vector<T>::begin()
 {
 
 }
 
 template <typename T>
-vector<T>::const_iterator vector<T>::begin() const
+typename vector<T>::const_iterator vector<T>::begin() const
 {
 
 }
 
 template <typename T>
-vector<T>::iterator vector<T>::end()
+typename vector<T>::iterator vector<T>::end()
 {
 }
 
 template <typename T>
-vector<T>::const_iterator vector<T>::end() const
-{
-}
-
-
-template <typename T>
-vector<T>::reverse_iterator vector<T>::rbegin()
-{
-}
-
-template <typename T>
-vector<T>::const_reverse_iterator vector<T>::rbegin() const
-{
-}
-
-template <typename T>
-vector<T>::reverse_iterator vector<T>::rend()
-{
-}
-
-template <typename T>
-vector<T>::const_reverse_iterator vector<T>::rend() const
+typename vector<T>::const_iterator vector<T>::end() const
 {
 }
 
 
 template <typename T>
-vector<T>::size_type vector<T>::size() const
+typename vector<T>::reverse_iterator vector<T>::rbegin()
+{
+}
+
+template <typename T>
+typename vector<T>::const_reverse_iterator vector<T>::rbegin() const
+{
+}
+
+template <typename T>
+typename vector<T>::reverse_iterator vector<T>::rend()
+{
+}
+
+template <typename T>
+typename vector<T>::const_reverse_iterator vector<T>::rend() const
 {
 }
 
 
 template <typename T>
-vector<T>::size_type vector<T>::max_size() const
+typename vector<T>::size_type vector<T>::size() const
+{
+	return m_size;
+}
+
+
+template <typename T>
+typename vector<T>::size_type vector<T>::max_size() const
 {
 	return std::numeric_limits<size_type>::max();
 }
@@ -97,7 +176,7 @@ void vector<T>::resize(size_type size, T copy = T())
 
 
 template <typename T>
-vector<T>::size_type vector<T>::capacity() const
+typename vector<T>::size_type vector<T>::capacity() const
 {
 
 }
@@ -170,7 +249,9 @@ const T& vector<T>::back() const
 {
 }
 
-template <typename T, typename I>
+
+template <typename T>
+template <typename I>
 void vector<T>::assign(I first, I last)
 {
 }
@@ -188,13 +269,14 @@ void vector<T>::push_back(const T& x)
 }
 
 
+template <typename T>
 void vector<T>::pop_back()
 {
 }
 
 
 template <typename T>
-iterator vector<T>::insert(iterator p, const T& x)
+typename vector<T>::iterator vector<T>::insert(typename vector<T>::iterator p, const T& x)
 {
 }
 
@@ -205,19 +287,21 @@ void vector<T>::insert(iterator p, size_type n, const T& x)
 }
 
 
-template <typename T, typename I> void vector<T>::insert(I p, I first, I last)
+template <typename T>
+template <typename I>
+void vector<T>::insert(I p, I first, I last)
 {
 }
 
 
 template <typename T>
-iterator vector<T>::erase(iterator p)
+typename vector<T>::iterator vector<T>::erase(typename vector<T>::iterator p)
 {
 }
 
 
 template <typename T>
-iterator vector<T>::erase(iterator first, iterator last)
+typename vector<T>::iterator vector<T>::erase(typename vector<T>::iterator first, typename vector<T>::iterator last)
 {
 }
 
@@ -226,6 +310,13 @@ template <typename T>
 void vector<T>::swap(vector<T>& v)
 {
 }
+
+
+// Create dummy template use so the template code actually gets copmiled.
+// TODO: Remove when tests are in place.
+vector<int> dummyVector;
+listIterator<vector<int>, int> dummyIntListIter(dummyVector);
+reverseListIterator<vector<int>, int> dummyIntReverseListIter(dummyVector);
 
 
 }
