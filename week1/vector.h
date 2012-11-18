@@ -12,9 +12,10 @@ class listIterator
 public:
 	listIterator(L& list);
 	listIterator(const listIterator<L, T>& other);
-	virtual bool end();
+	virtual bool end() const;
 	virtual listIterator<L, T>& operator++();
 	T& operator*();
+	bool operator==(const listIterator<L, T>& other) const;
 
 protected:
 	L& m_list;
@@ -27,7 +28,7 @@ class reverseListIterator : listIterator<L, T>
 public:
 	reverseListIterator(L& list);
 	reverseListIterator(const reverseListIterator<L, T>& other);
-	bool end() override;
+	bool end() const override;
 	reverseListIterator<L, T>& operator++() override;
 };
 
@@ -46,6 +47,7 @@ public:
 	explicit vector(size_type n = 0, const T& x = T());
 	vector(const vector<T>& v);
 	template <typename I> vector(I first, I last);
+	~vector();
 
 	iterator begin();
 	const_iterator begin() const;
@@ -91,6 +93,9 @@ private:
 	T* m_data;           // This is the underlying storage for our vector.
 	size_type m_capacity; // How many slots does m_data have?
 	size_type m_size;     // How many slots are being used?
+
+	static const size_t c_DefaultCapacity = 10;
+	static const size_t c_DefaultGrowthFactor = 2;
 };
 
 // Add some code here, probably

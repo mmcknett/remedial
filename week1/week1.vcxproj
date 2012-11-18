@@ -78,10 +78,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cc" />
+    <ClCompile Include="tests.cc" />
     <ClCompile Include="vector.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sort.h" />
+    <ClInclude Include="tests.h" />
     <ClInclude Include="vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
