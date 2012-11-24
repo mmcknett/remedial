@@ -114,11 +114,7 @@ private:
 
 	static const size_t c_DefaultCapacity = 10;
 	static const size_t c_DefaultGrowthFactor = 2;
-	static T s_default; // TODO: Remove; only a placeholder.
 };
-
-template <typename T>
-T vector<T>::s_default;
 
 
 }  // namespace rtl

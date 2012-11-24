@@ -22,13 +22,13 @@ namespace tests
 	success = success && (x); \
 	if (!success) \
 	{ \
-		std::cerr << (s) << std::endl; \
+		std::cerr << s << std::endl; \
 		return false; \
 	} \
 
 #define SUCCESSMSG(s) \
 	if (success) \
-		std::cerr << (s) << std::endl; \
+		std::cerr << s << std::endl; \
 
 #define TESTRETURN \
 	return success; \
@@ -40,6 +40,7 @@ bool RunVectorTests()
 
 	CHK(VectorIntConstructorTest());
 	CHK(VectorIntInsertTest());
+	CHK(VectorPushPopTest());
 
 	SUCCESSMSG("All tests completed successfully!");
 
@@ -91,6 +92,28 @@ bool VectorIntInsertTest()
 
 	TESTRETURN;
 }
+
+
+bool VectorPushPopTest()
+{
+	TESTINIT;
+
+	vector<RefCounter> dut;
+	{
+		dut.push_back(RefCounter());
+		dut.push_back(RefCounter());
+	}
+
+	CHKS(dut.size() == 2, "The vector has the wrong size.");
+	CHKS(RefCounter::GetCount() == 2, "push_back did not do construction properly.  Count is " << RefCounter::GetCount());
+
+	SUCCESSMSG("The push/pop tests completed successfully.");
+
+	TESTRETURN;
+}
+
+
+int RefCounter::count = 0;
 
 
 }

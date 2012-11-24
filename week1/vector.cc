@@ -3,11 +3,12 @@
 // Implements the remedial template library vector interface
 //
 
-//#include <algorithm>
+#include <algorithm>
 #include <cstring>
 #include <limits>
 
 #include "vector.h"
+#include "tests.h"
 
 namespace rtl
 {
@@ -146,9 +147,14 @@ vector<T>::vector(I first, I last) :
 template <typename T>
 vector<T>::~vector()
 {
+	// Destruct all elements
+	for (iterator i = begin(); i < end(); ++i)
+		m_alloc.destroy(i);
+
+	m_alloc.deallocate(m_data, m_capacity);
+
 	m_size = 0;
 	m_capacity = 0;
-	delete[] m_data;
 	m_data = nullptr;
 }
 
@@ -213,7 +219,7 @@ typename vector<T>::size_type vector<T>::size() const
 template <typename T>
 typename vector<T>::size_type vector<T>::max_size() const
 {
-	return std::numeric_limits<size_type>::max();
+	return m_alloc.max_size();
 }
 
 template <typename T>
@@ -230,9 +236,12 @@ void vector<T>::resize(size_type size, T copy = T())
 	if(oldSize != m_size)
 		(void*)0; //throw new exception(); // Should never happen.
 
-	// Fill out any empty slots with the default data.
+	// Fill out any empty slots with the default data, or destruct old slots being removed.
 	if (m_size < size)
 		std::fill(m_data + m_size, m_data + size, copy);
+	else if (size < m_size)
+		for (iterator i = m_data + size; i < m_data + m_size; ++i)
+			m_alloc.destroy(i);
 
 	// Set the size.  If size is less than m_size, don't bother updating
 	// the existing slots.
@@ -326,58 +335,54 @@ const T& vector<T>::operator[](size_type n) const
 template <typename T>
 T& vector<T>::at(size_type n)
 {
-	if(n < m_size)
-	{
-		return m_data[n];
-	}
-	else
-	{
-		// TODO: Throw an exception.
-		return s_default;
-	}
+	if (n >= m_size)
+		throw new std::exception; // TODO: use the right exception.
+	
+	return m_data[n];
 }
 
 
 template <typename T>
 const T& vector<T>::at(size_type n) const
 {
-	if(n < m_size)
-	{
-		return m_data[n];
-	}
-	else
-	{
-		// TODO: Throw an exception.
-		return s_default;
-	}
+	if (n >= m_size)
+		throw new std::exception; // TODO: use the right exception.
+
+	return m_data[n];
 }
 
 
 template <typename T>
 T& vector<T>::front()
 {
-	return s_default;
+	return const_cast<T&>( const_cast<const vector<T>* >( this )->front() );
 }
 
 
 template <typename T>
 const T& vector<T>::front() const
 {
-	return s_default;
+	if (m_size == 0)
+		throw new std::exception; // TODO: throw the right exception.
+
+	return *begin();
 }
 
 
 template <typename T>
 T& vector<T>::back()
 {
-	return s_default;
+	return const_cast<T&>( const_cast<const vector<T>* >( this )->back() );
 }
 
 
 template <typename T>
 const T& vector<T>::back() const
 {
-	return s_default;
+	if (m_size == 0)
+		throw new std::exception; // TODO: throw the right exception.
+
+	return *(end() - 1);
 }
 
 
@@ -397,18 +402,27 @@ void vector<T>::assign(size_type n, const T& x)
 template <typename T>
 void vector<T>::push_back(const T& x)
 {
+	// Reserve space for another element.  Note: don't use resize because it
+	// would do an extra copy of x.
+	reserve(m_size + 1);
+
+	// Copy-construct the new T.
+	m_alloc.construct(m_data + m_size, x);
+	m_size++;
 }
 
 
 template <typename T>
 void vector<T>::pop_back()
 {
+	resize(m_size - 1);
 }
 
 
 template <typename T>
 typename vector<T>::iterator vector<T>::insert(typename vector<T>::iterator p, const T& x)
 {
+	insert(p, 1, x);
 	return p;
 }
 
@@ -416,6 +430,15 @@ typename vector<T>::iterator vector<T>::insert(typename vector<T>::iterator p, c
 template <typename T>
 void vector<T>::insert(iterator p, size_type n, const T& x)
 {
+	if (n == 0)
+		return; // Nothing to do.
+
+	iterator last = end();
+	resize(m_size + n);
+	iterator destination = end();
+
+	std::copy_backward(p, last, destination); // Move all the elements up n slots.
+	std::fill_n(p, n, x);
 }
 
 
@@ -423,32 +446,52 @@ template <typename T>
 template <typename I>
 void vector<T>::insert(I p, I first, I last)
 {
+	if (first >= last)
+		return; // Nothing to do.
+
+	diff_type n = last - first;
+	iterator currentLast = end();
+	resize(m_size + n);
+	iterator newLast = end();
+	std::copy_backward(p, currentLast, newLast); // Move all the elements up n slots.
+	
+	// Copy the elements from first and last into our data at p.
+	std::copy(first, last, p);
 }
 
 
 template <typename T>
 typename vector<T>::iterator vector<T>::erase(typename vector<T>::iterator p)
 {
-	return p;
+	return erase(p, p + 1);
 }
 
 
 template <typename T>
 typename vector<T>::iterator vector<T>::erase(typename vector<T>::iterator first, typename vector<T>::iterator last)
 {
-	return last;
+	for (iterator i = first; i < last; ++i)
+		m_alloc.destroy(i);
+
+	std::memmove(first, last, end() - last);
+	m_size -= last - first;
+	return first;
 }
 
 
 template <typename T>
 void vector<T>::swap(vector<T>& v)
 {
+	std::swap(m_data, v.m_data);
+	std::swap(m_capacity, v.m_capacity);
+	std::swap(m_size, v.m_size);
 }
 
 
 // Create dummy template use so the template code actually gets compiled.
 
 template class vector<int>; // TODO: I wish I didn't have to instantiate this here...
+template class vector<tests::RefCounter>;
 //template class listIterator<vector<char>, char>;
 //template class reverseListIterator<vector<char>, char>;
 

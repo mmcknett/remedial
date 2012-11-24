@@ -16,5 +16,36 @@ bool VectorIntConstructorTest();
 // Makes a vector<int> and inserts 5 numbers.
 bool VectorIntInsertTest();
 
+// Checks push_back and pop_back.
+bool VectorPushPopTest();
+
+
+class RefCounter
+{
+public:
+	RefCounter()
+	{
+		++count;
+	}
+
+	RefCounter(const RefCounter& other)
+	{
+		++count;
+	}
+
+	~RefCounter()
+	{
+		--count;
+	}
+
+	static int GetCount()
+	{
+		return count;
+	}
+
+private:
+	static int count;
+};
+
 }
 }
