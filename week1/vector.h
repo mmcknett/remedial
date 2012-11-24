@@ -2,35 +2,45 @@
 #pragma once
 
 #include <cstddef>  // for size_t
+#include <memory>   // for allocator
 
 // "Remedial Template Library"
 namespace rtl {
 
-template <typename L, typename T>
-class listIterator
-{
-public:
-	listIterator(L& list);
-	listIterator(const listIterator<L, T>& other);
-	virtual bool end() const;
-	virtual listIterator<L, T>& operator++();
-	T& operator*();
-	bool operator==(const listIterator<L, T>& other) const;
-
-protected:
-	L& m_list;
-	size_t m_idxCur;
-};
-
-template <typename L, typename T>
-class reverseListIterator : listIterator<L, T>
-{
-public:
-	reverseListIterator(L& list);
-	reverseListIterator(const reverseListIterator<L, T>& other);
-	bool end() const override;
-	reverseListIterator<L, T>& operator++() override;
-};
+//template <typename L, typename T>
+//class listIterator
+//{
+//public:
+//	listIterator(L& list);
+//	listIterator(const listIterator<L, T>& other);
+//	virtual bool end() const;
+//	virtual listIterator<L, T>& operator++();
+//	T& operator*();
+//	bool operator==(const listIterator<L, T>& other) const;
+//
+//protected:
+//	L& m_list;
+//	size_t m_idxCur;
+//
+//	listIterator() : m_list(s_default), m_idxCur(0) {}
+//	static L s_default;
+//};
+//
+//template <typename L, typename T>
+//L listIterator<L, T>::s_default;
+//
+//template <typename L, typename T>
+//class reverseListIterator : public listIterator<L, T>
+//{
+//public:
+//	reverseListIterator(L& list);
+//	reverseListIterator(const reverseListIterator<L, T>& other);
+//	bool end() const override;
+//	reverseListIterator<L, T>& operator++() override;
+//
+//private:
+//	reverseListIterator();
+//};
 
 // Other than the typedef's at the top, I believe that this is pretty much
 // the STL's vector class. It seemed like a good starting point.
@@ -39,12 +49,17 @@ class vector
 {
 public:
 	typedef size_t size_type;
-	typedef listIterator<vector<T>, T> iterator;
-	typedef listIterator<const vector<T>, const T> const_iterator;
-	typedef reverseListIterator<vector<T>, T> reverse_iterator;
-	typedef reverseListIterator<const vector<T>, const T> const_reverse_iterator;
+	//typedef listIterator<vector<T>, T> iterator;
+	//typedef listIterator<const vector<T>, const T> const_iterator;
+	//typedef reverseListIterator<vector<T>, T> reverse_iterator;
+	//typedef reverseListIterator<const vector<T>, const T> const_reverse_iterator;
+	typedef T* iterator;
+	typedef const T* const_iterator;
+	typedef std::reverse_iterator<T*> reverse_iterator;
+	typedef std::reverse_iterator<const T*> const_reverse_iterator;
 
-	explicit vector(size_type n = 0, const T& x = T());
+	explicit vector(size_type n = 0);
+	explicit vector(size_type n, const T& x);
 	vector(const vector<T>& v);
 	template <typename I> vector(I first, I last);
 	~vector();
@@ -90,14 +105,20 @@ public:
 	void clear();
 
 private:
-	T* m_data;           // This is the underlying storage for our vector.
-	size_type m_capacity; // How many slots does m_data have?
-	size_type m_size;     // How many slots are being used?
+	size_type nextLargestCapacity(size_type n);
+
+	T* m_data;                 // This is the underlying storage for our vector.
+	size_type m_capacity;      // How many slots does m_data have?
+	size_type m_size;          // How many slots are being used?
+	std::allocator<T> m_alloc; // Use the default allocator for our vector.
 
 	static const size_t c_DefaultCapacity = 10;
 	static const size_t c_DefaultGrowthFactor = 2;
+	static T s_default; // TODO: Remove; only a placeholder.
 };
 
-// Add some code here, probably
+template <typename T>
+T vector<T>::s_default;
+
 
 }  // namespace rtl

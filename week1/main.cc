@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 	if (vectorTestsSucceeded)
 		std::cout << "vector<T> tests passed." << std::endl;
 	else
-		std::cout << "vecotr<T> tests failed." << std::endl;
+		std::cout << "vector<T> tests failed." << std::endl;
 
 	WaitForKey();
 	return 0;
