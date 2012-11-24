@@ -14,86 +14,6 @@ namespace rtl
 {
 
 
-//// ============================================================================
-//// listIterator implementation
-//// ============================================================================
-//template <typename L, typename T>
-//listIterator<L, T>::listIterator(L& list) :
-//	m_list(list),
-//	m_idxCur(0)
-//{
-//}
-//
-//template <typename L, typename T>
-//listIterator<L, T>::listIterator(const listIterator<L, T>& other) :
-//	m_list(other.m_list),
-//	m_idxCur(other.m_idxCur)
-//{
-//}
-//
-//
-//template <typename L, typename T>
-//bool listIterator<L, T>::end() const
-//{
-//	return m_list.size() == m_idxCur;
-//}
-//
-//template <typename L, typename T>
-//listIterator<L, T>& listIterator<L, T>::operator++()
-//{
-//	++m_idxCur;
-//	return *this;
-//}
-//
-//
-//template <typename L, typename T>
-//T& listIterator<L, T>::operator*()
-//{
-//	return m_list[m_idxCur];
-//}
-//
-//template <typename L, typename T>
-//bool listIterator<L, T>::operator==(const listIterator<L, T>& other) const
-//{
-//	return	&m_list == &other.m_list &&
-//			m_idxCur == other.m_idxCur;
-//}
-//
-//
-//// ============================================================================
-//// reverseListIterator implementation
-//// ============================================================================
-//template <typename L, typename T>
-//reverseListIterator<L, T>::reverseListIterator(L& list) :
-//	listIterator<L, T>(list)
-//{
-//	m_idxCur = list.size() - 1;
-//}
-//
-//
-//template <typename L, typename T>
-//reverseListIterator<L,T>::reverseListIterator(const reverseListIterator<L, T>& other) :
-//	listIterator<L, T>(other)
-//{
-//}
-//
-//
-//template <typename L, typename T>
-//bool reverseListIterator<L,T>::end() const
-//{
-//	// TODO: That's just incorrect.  m_idxCur is unsigned!
-//	//return m_idxCur == -1;
-//	return true; // I'm just breaking it for now.
-//}
-//
-//template <typename L, typename T>
-//reverseListIterator<L, T>& reverseListIterator<L,T>::operator++()
-//{
-//	--m_idxCur;
-//	return *this;
-//}
-
-
 // ============================================================================
 // vector implementation
 // ============================================================================
@@ -492,8 +412,6 @@ void vector<T>::swap(vector<T>& v)
 
 template class vector<int>; // TODO: I wish I didn't have to instantiate this here...
 template class vector<tests::RefCounter>;
-//template class listIterator<vector<char>, char>;
-//template class reverseListIterator<vector<char>, char>;
 
 
 }
