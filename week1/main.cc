@@ -15,12 +15,15 @@ void WaitForKey()
 int main(int argc, char **argv) {
 	
 	// Run vector tests
+	//tests::VerboseLogging enableVerboseLogging;
 	bool vectorTestsSucceeded = tests::RunVectorTests();
+
 	if (vectorTestsSucceeded)
 		std::cout << "vector<T> tests passed." << std::endl;
 	else
 		std::cout << "vector<T> tests failed." << std::endl;
 
+	// Press any key to continue...
 	WaitForKey();
 	return 0;
 }

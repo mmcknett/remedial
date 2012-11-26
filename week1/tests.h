@@ -14,7 +14,7 @@ bool RunVectorTests();
 bool VectorIntConstructorTest();
 
 // Makes a vector<int> and inserts 5 numbers.
-bool VectorIntInsertTest();
+bool VectorIntInsertEraseTest();
 
 // Checks push_back and pop_back.
 bool VectorPushPopTest();
@@ -23,28 +23,31 @@ bool VectorPushPopTest();
 class RefCounter
 {
 public:
-	RefCounter()
-	{
-		++count;
-	}
+	RefCounter(bool enableLogging = false);
+	RefCounter(const RefCounter& other);
+	~RefCounter();
 
-	RefCounter(const RefCounter& other)
-	{
-		++count;
-	}
-
-	~RefCounter()
-	{
-		--count;
-	}
-
-	static int GetCount()
-	{
-		return count;
-	}
+	static int GetCount();
 
 private:
-	static int count;
+	void PrintBeforeLog(char* prefix = "");
+	void PrintAfterLog();
+
+	bool m_enableLogging;
+
+	static int s_count;
+};
+
+class VerboseLogging
+{
+public:
+	VerboseLogging();
+	~VerboseLogging();
+
+	static bool Enabled();
+
+private:
+	static int s_verboseLoggingEnabled;
 };
 
 }

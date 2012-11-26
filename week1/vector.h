@@ -79,3 +79,6 @@ private:
 
 
 }  // namespace rtl
+
+
+#include "vector_impl.h"
