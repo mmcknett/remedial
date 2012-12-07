@@ -313,12 +313,17 @@ template <typename T>
 template <typename I>
 void vector<T>::assign(I first, I last)
 {
+	resize(last - first);
+	std::copy_backward(first, last, end());
 }
 
 
 template <typename T>
 void vector<T>::assign(size_type n, const T& x)
 {
+	size_type origSize = m_size;
+	resize(n, x);
+	std::fill_n(begin(), (origSize < n) ? origSize : n, x);
 }
 
 

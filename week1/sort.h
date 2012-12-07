@@ -10,3 +10,6 @@ template <typename Iter, typename Comp>
 void quicksort(Iter first, Iter last, Comp comp);
 
 }  // namespace rtl
+
+
+#include "sort_impl.h"

@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="sort.h" />
+    <ClInclude Include="sort_impl.h" />
     <ClInclude Include="tests.h" />
     <ClInclude Include="vector.h" />
     <ClInclude Include="vector_impl.h" />
