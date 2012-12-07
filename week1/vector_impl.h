@@ -52,8 +52,12 @@ vector<T>::vector(I first, I last) :
 	m_capacity(0),
 	m_size(0)
 {
-	resize(last - first);
-	std::copy<I, iterator>(first, last, begin());
+	auto size = std::distance(first, last);
+	if (size > 0)
+	{
+		resize(size);
+		std::copy<I, iterator>(first, last, begin());
+	}
 }
 
 

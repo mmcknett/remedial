@@ -6,6 +6,11 @@ namespace rtl
 namespace tests
 {
 
+// sort tests
+bool RunSortTests();
+
+bool MergeSortTest();
+
 // vector tests
 bool RunVectorTests();
 
@@ -48,6 +53,17 @@ public:
 
 private:
 	static int s_verboseLoggingEnabled;
+};
+
+class StopWatch
+{
+public:
+	StopWatch();
+	void Reset();
+	__int64 GetTickCount();
+
+private:
+	__int64 m_startTickCount;
 };
 
 }
