@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstring>
 #include <limits>
+#include <iterator>
 
 #include "vector.h"
 //#include "tests.h"
@@ -17,16 +18,6 @@ namespace rtl
 // ============================================================================
 // vector implementation
 // ============================================================================
-
-template <typename T>
-vector<T>::vector(size_type n) :
-	m_data(nullptr),
-	m_capacity(0),
-	m_size(0)
-{
-	reserve(n);
-}
-
 
 template <typename T>
 vector<T>::vector(size_type n, const T& x /*= T()*/) :
@@ -350,16 +341,15 @@ void vector<T>::pop_back()
 template <typename T>
 typename vector<T>::iterator vector<T>::insert(typename vector<T>::iterator p, const T& x)
 {
-	insert(p, 1, x);
-	return p;
+	return insert(p, 1u, x);
 }
 
 
 template <typename T>
-void vector<T>::insert(iterator p, size_type n, const T& x)
+typename vector<T>::iterator vector<T>::insert(typename vector<T>::iterator p, size_type n, const T& x)
 {
 	if (n == 0)
-		return; // Nothing to do.
+		return p; // Nothing to do.
 
 	iterator last = end();
 	resize(m_size + n);
@@ -367,17 +357,19 @@ void vector<T>::insert(iterator p, size_type n, const T& x)
 
 	std::copy_backward(p, last, destination); // Move all the elements up n slots.
 	std::fill_n(p, n, x);
+
+	return p;
 }
 
 
 template <typename T>
 template <typename I>
-void vector<T>::insert(I p, I first, I last)
+typename vector<T>::iterator vector<T>::insert(typename vector<T>::iterator p, I first, I last)
 {
 	if (first >= last)
-		return; // Nothing to do.
+		return p; // Nothing to do.
 
-	diff_type n = last - first;
+	std::iterator_traits<I>::difference_type n = std::distance(first, last);
 	iterator currentLast = end();
 	resize(m_size + n);
 	iterator newLast = end();
@@ -385,6 +377,7 @@ void vector<T>::insert(I p, I first, I last)
 	
 	// Copy the elements from first and last into our data at p.
 	std::copy(first, last, p);
+	return p;
 }
 
 
